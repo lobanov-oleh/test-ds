@@ -21,7 +21,10 @@
                 "test/*"
             ],
             "@api/*": [
-                "src/api/*"
+                "src/controllers/api/*"
+            ],
+            "@models/*": [
+                "src/models/*"
             ]
         }
     },

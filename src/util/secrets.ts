@@ -12,11 +12,11 @@ if (fs.existsSync('.env')) {
 export const ENVIRONMENT = process.env.NODE_ENV
 const prod = ENVIRONMENT === 'production' // Anything else is treated as 'dev'
 
-export const SESSION_SECRET = process.env.SESSION_SECRET
+export const JWT_SECRET = process.env.JWT_SECRET
 export const MONGODB_URI = prod ? process.env.MONGODB_URI : process.env.MONGODB_URI_LOCAL
 
-if (typeof SESSION_SECRET === 'undefined') {
-  logger.error('No client secret. Set SESSION_SECRET environment variable.')
+if (typeof JWT_SECRET === 'undefined') {
+  logger.error('No JWT secret. Set JWT_SECRET environment variable.')
   process.exit(1)
 }
 

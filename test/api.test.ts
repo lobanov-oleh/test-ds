@@ -3,9 +3,19 @@ import app from '@src/app'
 import v1 from '@api/v1'
 import { expect } from '@test/chai'
 
+let token: string
+const getToken = async (): Promise<void> => {
+  const res = await request(app).post('/token')
+  token = res.body.token
+}
+
 describe('GET /api', () => {
+  before(getToken)
+
   it('should return versions', async () => {
-    const res = await request(app).get('/api')
+    const res = await request(app)
+      .get('/api')
+      .set({ Authorization: 'bearer ' + token })
 
     expect(res.status).to.equal(200)
     expect(res.body).not.to.be.empty()
@@ -14,8 +24,12 @@ describe('GET /api', () => {
 })
 
 describe('GET /api/v1', () => {
+  before(getToken)
+
   it('should return version name', async () => {
-    const res = await request(app).get('/api/v1')
+    const res = await request(app)
+      .get('/api/v1')
+      .set({ Authorization: 'bearer ' + token })
 
     expect(res.status).to.equal(200)
     expect(res.body).not.to.be.empty()

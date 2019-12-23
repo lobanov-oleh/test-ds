@@ -1,9 +1,9 @@
 import { Response, Request } from 'express'
-import { check, validationResult } from "express-validator"
+import { check, validationResult } from 'express-validator'
 import { VideoStatus, Video } from '@models/Video'
 
 interface AuthRequest extends Request {
-  user?: any;
+  user?: any
 }
 
 const name = 'v1'
@@ -16,7 +16,7 @@ const upload = async (req: AuthRequest, res: Response): Promise<object> => {
   await check('start', 'Invalid start value').isInt({ min: 0 }).run(req)
   await check('end', 'Invalid end value').isInt({ min: 1 }).run(req)
 
-  const errors = validationResult(req);
+  const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
     return res.status(400).json({
@@ -30,7 +30,7 @@ const upload = async (req: AuthRequest, res: Response): Promise<object> => {
     })
   }
 
-  const video = new Video({ 
+  const video = new Video({
     userUuid: req.user.uuid,
     filename: req.file.filename,
     originalName: req.file.originalname,

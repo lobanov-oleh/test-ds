@@ -11,8 +11,8 @@ export type VideoDocument = mongoose.Document & {
   userUuid: string
   filename: string
   originalName: string
-  start: number // milliseconds
-  end: number // milliseconds
+  start: number // seconds
+  end: number // seconds
   status: VideoStatus
 }
 

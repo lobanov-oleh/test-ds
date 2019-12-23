@@ -43,8 +43,8 @@ describe('GET /api/v1/upload', () => {
   it('should upload', async () => {
     const res = await request(app)
       .post('/api/v1/upload')
-      .field('start', 1000)
-      .field('end', 5000)
+      .field('start', 1)
+      .field('end', 5)
       .attach('video', path.join(__dirname, 'data/video.mp4'))
       .set({ Authorization: 'bearer ' + token })
 

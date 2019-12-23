@@ -1,3 +1,4 @@
+import path from 'path'
 import request from 'supertest'
 import app from '@src/app'
 import { expect } from '@test/bootstrap/chai'
@@ -33,5 +34,22 @@ describe('GET /api/v1', () => {
     expect(res.status).to.equal(200)
     expect(res.body).not.to.be.empty()
     expect(res.body.name).to.be.equals('v1')
+  })
+})
+
+describe('GET /api/v1/upload', () => {
+  before(getToken)
+
+  it('should upload', async () => {
+    const res = await request(app)
+      .post('/api/v1/upload')
+      .field('start', 1000)
+      .field('end', 5000)
+      .attach('video', path.join(__dirname, 'data/video.mp4'))
+      .set({ Authorization: 'bearer ' + token })
+
+    expect(res.status).to.equal(200)
+    expect(res.body).not.to.be.empty()
+    expect(res.body.filename).not.to.be.empty()
   })
 })

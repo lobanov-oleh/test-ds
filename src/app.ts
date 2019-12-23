@@ -9,7 +9,7 @@ import bluebird from 'bluebird'
 import { MONGODB_URI, JWT_SECRET } from '@src/util/secrets'
 
 import tokenRouter from '@routes/tokenRouter'
-import apiRouter from '@routes/apiRouter/index'
+import apiRouter from '@routes/apiRouter'
 
 // Create Express server
 const app = express()

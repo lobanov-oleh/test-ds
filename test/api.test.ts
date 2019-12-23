@@ -1,7 +1,6 @@
 import request from 'supertest'
 import app from '@src/app'
-import v1 from '@api/v1'
-import { expect } from '@test/chai'
+import { expect } from '@test/bootstrap/chai'
 
 let token: string
 const getToken = async (): Promise<void> => {
@@ -33,6 +32,6 @@ describe('GET /api/v1', () => {
 
     expect(res.status).to.equal(200)
     expect(res.body).not.to.be.empty()
-    expect(res.body.name).to.be.equals(v1.name)
+    expect(res.body.name).to.be.equals('v1')
   })
 })

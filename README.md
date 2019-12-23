@@ -24,7 +24,7 @@ The bunch of the following modules makes this possible:
 
 ### [dirty-chai](https://github.com/prodatakey/dirty-chai)
 
-See [test/chai.ts](test/chai.ts)
+See [test/chai.ts](test/bootstrap/chai.ts)
 
 ## Getting started
 

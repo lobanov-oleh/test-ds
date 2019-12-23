@@ -1,6 +1,6 @@
 import request from 'supertest'
 import app from '@src/app'
-import { expect } from '@test/chai'
+import { expect } from '@test/bootstrap/chai'
 
 let uuid: string
 
@@ -23,7 +23,7 @@ describe('GET /token', () => {
 
     expect(res.status).to.equal(200)
     expect(res.body).not.to.be.empty()
-    expect(res.body.uuid).equal(uuid)
+    expect(res.body.token).not.be.empty()
   })
 
   it('should return 404 for unknown uuid', async () => {

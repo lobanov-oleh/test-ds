@@ -20,8 +20,11 @@
             "@test/*": [
                 "test/*"
             ],
-            "@api/*": [
-                "src/controllers/api/*"
+            "@routes/*": [
+                "src/routes/*"
+            ],
+            "@controllers/*": [
+                "src/controllers/*"
             ],
             "@models/*": [
                 "src/models/*"

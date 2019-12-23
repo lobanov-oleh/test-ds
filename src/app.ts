@@ -8,8 +8,8 @@ import mongoose from 'mongoose'
 import bluebird from 'bluebird'
 import { MONGODB_URI, JWT_SECRET } from '@src/util/secrets'
 
-import { token } from '@src/controllers/token'
-import api from '@api/index'
+import tokenRouter from '@routes/tokenRouter'
+import apiRouter from '@routes/apiRouter/index'
 
 // Create Express server
 const app = express()
@@ -39,7 +39,7 @@ app.use(
   express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 })
 )
 
-app.use('/token', token)
-app.use('/api', jwtMiddleWare, api)
+app.use('/token', tokenRouter)
+app.use('/api', jwtMiddleWare, apiRouter)
 
 export default app

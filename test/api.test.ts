@@ -4,6 +4,8 @@ import app from '@src/app'
 import { expect } from '@test/bootstrap/chai'
 
 let token: string
+let filename: string
+
 const getToken = async (): Promise<void> => {
   const res = await request(app).post('/token')
   token = res.body.token
@@ -51,6 +53,8 @@ describe('GET /api/v1/upload', () => {
     expect(res.status).to.equal(200)
     expect(res.body).not.to.be.empty()
     expect(res.body.filename).not.to.be.empty()
+
+    filename = res.body.filename
   })
 })
 
@@ -65,5 +69,17 @@ describe('GET /api/v1/videos', () => {
     expect(res.body.videos).to.be.an('array')
     expect(res.body.videos).not.to.be.empty()
     expect(res.body.videos).to.have.lengthOf(1)
+  })
+})
+
+describe('GET /api/v1/restart', () => {
+  it('should restart video trimming', async () => {
+    const res = await request(app)
+      .get('/api/v1/restart/' + filename)
+      .set({ Authorization: 'bearer ' + token })
+
+    expect(res.status).to.equal(200)
+    expect(res.body).not.to.be.empty()
+    expect(res.body.status).to.be.equal('restarted')
   })
 })

@@ -1,7 +1,7 @@
 import { Response, Request } from 'express'
 import { check, validationResult } from 'express-validator'
 import { VideoStatus, Video } from '@models/Video'
-import { spawn } from 'child_process'
+import trimmer from '@src/services/trimmer'
 
 interface AuthRequest extends Request {
   user?: any
@@ -42,10 +42,7 @@ const upload = async (req: AuthRequest, res: Response): Promise<object> => {
 
   try {
     await video.save()
-    spawn('node', ['dist/trimmer.js', video.filename], {
-      stdio: 'ignore', // piping all stdio to /dev/null
-      detached: true
-    })
+    trimmer(video.filename)
   } catch (error) {
     return res.status(500).send({ error })
   }
@@ -62,8 +59,26 @@ const videos = async (req: AuthRequest, res: Response): Promise<object> => {
   }
 }
 
+const restart = async (req: AuthRequest, res: Response): Promise<object> => {
+  try {
+    const video = await Video.findOne({
+      userUuid: req.user.uuid,
+      filename: req.params.filename
+    })
+    if (video !== null) {
+      trimmer(video.filename)
+      return res.send({ status: 'restarted' })
+    } else {
+      return res.status(404).send({ error: 'Video not found' })
+    }
+  } catch (error) {
+    return res.status(500).send({ error })
+  }
+}
+
 export default {
   index,
   upload,
-  videos
+  videos,
+  restart
 }

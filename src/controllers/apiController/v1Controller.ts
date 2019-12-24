@@ -1,6 +1,7 @@
 import { Response, Request } from 'express'
 import { check, validationResult } from 'express-validator'
 import { VideoStatus, Video } from '@models/Video'
+import { spawn } from 'child_process'
 
 interface AuthRequest extends Request {
   user?: any
@@ -41,6 +42,10 @@ const upload = async (req: AuthRequest, res: Response): Promise<object> => {
 
   try {
     await video.save()
+    spawn('node', ['dist/trimmer.js', video.filename], {
+      stdio: 'ignore', // piping all stdio to /dev/null
+      detached: true
+    })
   } catch (error) {
     return res.status(500).send({ error })
   }
@@ -48,7 +53,17 @@ const upload = async (req: AuthRequest, res: Response): Promise<object> => {
   return res.send({ filename: req.file.filename })
 }
 
+const videos = async (req: AuthRequest, res: Response): Promise<object> => {
+  try {
+    const videos = await Video.find({ userUuid: req.user.uuid })
+    return res.send({ videos })
+  } catch (error) {
+    return res.status(500).send({ error })
+  }
+}
+
 export default {
   index,
-  upload
+  upload,
+  videos
 }

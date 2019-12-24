@@ -11,4 +11,6 @@ const upload = multer({
 })
 router.post('/upload', upload.single('video'), v1Controller.upload)
 
+router.get('/videos', v1Controller.videos)
+
 export default router

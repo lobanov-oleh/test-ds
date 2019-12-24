@@ -53,3 +53,17 @@ describe('GET /api/v1/upload', () => {
     expect(res.body.filename).not.to.be.empty()
   })
 })
+
+describe('GET /api/v1/videos', () => {
+  it('should get videos with one element', async () => {
+    const res = await request(app)
+      .get('/api/v1/videos')
+      .set({ Authorization: 'bearer ' + token })
+
+    expect(res.status).to.equal(200)
+    expect(res.body).not.to.be.empty()
+    expect(res.body.videos).to.be.an('array')
+    expect(res.body.videos).not.to.be.empty()
+    expect(res.body.videos).to.have.lengthOf(1)
+  })
+})

@@ -1,15 +1,12 @@
-import { Response, Request } from 'express'
+import { Response } from 'express'
+import AuthRequest from '@src/interfaces/AuthRequest'
 import { check, validationResult } from 'express-validator'
 import { VideoStatus, Video } from '@models/Video'
 import trimmer from '@src/services/trimmer'
 
-interface AuthRequest extends Request {
-  user?: any
-}
-
 const name = 'v1'
 
-const index = (req: Request, res: Response): object => {
+const index = (req: AuthRequest, res: Response): object => {
   return res.json({ name })
 }
 

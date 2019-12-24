@@ -2,6 +2,7 @@ import 'module-alias/register'
 
 import Ffmpeg from 'fluent-ffmpeg'
 import path from 'path'
+import fs from 'fs'
 import { connect } from '@src/services/mongoose'
 import { VideoStatus, VideoDocument, Video } from '@models/Video'
 
@@ -75,7 +76,12 @@ const trimVideo = (video: VideoDocument): void => {
     })
     .on('end', () => {
       setVideoStatus(video, VideoStatus.done).then(
-        () => exit(),
+        () => fs.rename(
+          filePath + '.trimmed',
+          filePath,
+          () => exit()
+        )
+        ,
         () => exit()
       )
     })

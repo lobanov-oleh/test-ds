@@ -2,69 +2,82 @@ import 'module-alias/register'
 
 import Ffmpeg from 'fluent-ffmpeg'
 import path from 'path'
-import fs from 'fs'
 import { connect } from '@src/services/mongoose'
 import { VideoStatus, VideoDocument, Video } from '@models/Video'
 
+const exit = (message?: string): void => {
+  if (typeof message !== 'undefined') {
+    console.log(message)
+  }
+
+  process.exit()
+}
+
 // Connect to DB
 connect
-  .then(
-    () => { /** ready to use. */ }
-  )
-  .catch((err: string) => {
-    console.log('DB connection error. ' + err)
-    process.exit()
-  })
+  .then(() => { /** DB is ready to use */ })
+  .catch((err: string) => exit('DB connection error. ' + err))
 
 const filename: string = process.argv.slice(2)[0]
 
 Video.findOne({ filename }).then(
   existingVideo => {
     if (existingVideo !== null) {
+      console.log('Video exists')
+
       if (existingVideo.status === VideoStatus.done) {
-        console.log('Already done')
-        return
+        exit('Already done')
       }
 
       if (existingVideo.status === VideoStatus.processing) {
-        console.log('Processing yet')
-        return
+        exit('Processing yet')
       }
 
       try {
         setVideoStatus(existingVideo, VideoStatus.processing)
-        trimVideo(existingVideo)
+          .then(
+            () => trimVideo(existingVideo),
+            error => exit(error)
+          )
       } catch (error) {
-        console.log(error)
+        exit(error)
       }
     } else {
-      console.log('Video not found')
+      exit('Video not found')
     }
   },
-  error => console.log(error)
+  error => exit(error)
 )
 
-const setVideoStatus = (video: VideoDocument, status: VideoStatus): void => {
+const setVideoStatus = async (video: VideoDocument, status: VideoStatus): Promise<void> => {
   video.status = status
-  video.save().then(
-    () => console.log('Status: ' + video.status),
+  return video.save().then(
+    () => console.log('New status: ' + video.status),
     (error) => console.log(error)
   )
 }
 
 const trimVideo = (video: VideoDocument): void => {
   const filePath: string = path.join(__dirname, '..', 'uploads', filename)
-  const readStream = fs.createReadStream(filePath)
-  const writeStream = fs.createWriteStream(filePath + '.trimmed')
 
-  Ffmpeg(readStream)
-    .format('m4v')
+  Ffmpeg(filePath)
+    .preset('divx')
     .setStartTime(video.start)
-    .duration(video.end - video.start)
-    .on('error', (error) => {
-      console.log(error)
-      setVideoStatus(video, VideoStatus.failed)
+    .setDuration(video.end - video.start)
+    .on('start', (commandLine: string) => {
+      console.log('Spawned FFmpeg with command: ' + commandLine)
     })
-    .on('end', () => setVideoStatus(video, VideoStatus.done))
-    .pipe(writeStream, { end: true })
+    .on('error', (error) => {
+      setVideoStatus(video, VideoStatus.failed).then(
+        () => exit(error),
+        () => exit(error)
+      )
+    })
+    .on('end', () => {
+      setVideoStatus(video, VideoStatus.done).then(
+        () => exit(),
+        () => exit()
+      )
+    })
+    .saveToFile(filePath + '.trimmed')
 }

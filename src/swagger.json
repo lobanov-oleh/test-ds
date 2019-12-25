@@ -1,0 +1,217 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Test DS",
+    "description": "DS test solution",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/videos": {
+      "get": {
+        "tags": [
+          "Videos"
+        ],
+        "summary": "Get all user videos",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Videos"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/videos/{filename}/link": {
+      "parameters": [
+        {
+          "name": "filename",
+          "in": "path",
+          "required": true,
+          "description": "Filename of the video that we want to get link",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Videos"
+        ],
+        "summary": "Get video link with given filename",
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "path",
+            "required": true,
+            "description": "Video link with filename",
+            "schema": {
+              "$ref": "#/definitions/filename"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/VideoLink"
+            }
+          },
+          "400": {
+            "description": "Failed. Video not done."
+          },
+          "404": {
+            "description": "Failed. Video not found."
+          }
+        }
+      }
+    },
+    "/api/v1/videos/{filename}/restart": {
+      "parameters": [
+        {
+          "name": "filename",
+          "in": "path",
+          "required": true,
+          "description": "Filename of the video that we want to restart",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Videos"
+        ],
+        "summary": "Restart video trimming with given filename",
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "path",
+            "required": true,
+            "description": "Video with filename",
+            "schema": {
+              "$ref": "#/definitions/filename"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Status"
+            }
+          },
+          "404": {
+            "description": "Failed. Video not found."
+          }
+        }
+      }
+    },
+    "/api/v1/videos/upload": {
+      "post": {
+        "tags": [
+          "Videos"
+        ],
+        "summary": "Upload a video",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "video",
+            "in": "formData",
+            "required": true,
+            "description": "The video file",
+            "type": "file"
+          },
+          {
+            "name": "start",
+            "in": "formData",
+            "required": true,
+            "description": "The start trimming position in seconds",
+            "type": "number"
+          },
+          {
+            "name": "end",
+            "in": "formData",
+            "required": true,
+            "description": "The end trimming position in seconds",
+            "type": "number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Video"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "filename": {
+      "type": "string"
+    },
+    "Video": {
+      "type": "object",
+      "properties": {
+        "userUuid": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "originalName": {
+          "type": "string"
+        },
+        "start": {
+          "type": "number"
+        },
+        "end": {
+          "type": "number"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "Videos": {
+      "type": "object",
+      "properties": {
+        "videos": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/Video"
+          }
+        }
+      }
+    },
+    "VideoLink": {
+      "type": "object",
+      "properties": {
+        "link": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "number"
+        }
+      }
+    },
+    "Status": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

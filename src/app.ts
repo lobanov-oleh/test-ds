@@ -6,6 +6,8 @@ import lusca from 'lusca'
 import path from 'path'
 import { connect } from '@src/services/mongoose'
 import { JWT_SECRET } from '@src/util/secrets'
+import swaggerUi from 'swagger-ui-express'
+import * as swaggerDocument from '@src/swagger.json'
 
 import tokenRouter from '@routes/tokenRouter'
 import playRouter from '@routes/playRouter'
@@ -41,5 +43,7 @@ app.use(
 app.use('/token', tokenRouter)
 app.use('/play', playRouter)
 app.use('/api', jwtMiddleWare, apiRouter)
+
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 export default app

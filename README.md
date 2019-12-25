@@ -28,11 +28,21 @@ See [test/chai.ts](test/bootstrap/chai.ts)
 
 ## Getting started
 
+Before all:
+
+* Start your mongoDB server
+* Run next:
+
 ```
 git clone git@github.com:lobanov-oleh/test-ds.git
 cd test-ds
 npm i
 npm run build
+```
+
+then
+
+```
 npm start
 ```
 
@@ -41,3 +51,7 @@ or
 ```
 npm test
 ```
+
+## API Documentation
+
+http://localhost:3000/swagger/

@@ -50,7 +50,7 @@ const upload = async (req: AuthRequest, res: Response): Promise<object> => {
 const videos = async (req: AuthRequest, res: Response): Promise<object> => {
   try {
     const videos = await Video.find({ userUuid: req.user.uuid })
-    return res.send({ videos })
+    return res.send({ videos: videos.map(v => v.toJSON()) })
   } catch (error) {
     return res.status(500).send({ error })
   }
@@ -73,9 +73,36 @@ const restart = async (req: AuthRequest, res: Response): Promise<object> => {
   }
 }
 
+const video = async (req: AuthRequest, res: Response): Promise<object> => {
+  try {
+    const video = await Video.findOne({
+      userUuid: req.user.uuid,
+      filename: req.params.filename
+    })
+
+    if (video !== null) {
+      if (video.status !== VideoStatus.done) {
+        return res.status(400).send({ error: 'Video not done' })
+      }
+
+      const port = req.app.get('port')
+
+      return res.send({
+        duration: video.end - video.start,
+        link: `http://localhost:${port}/play/${video.filename}`
+      })
+    } else {
+      return res.status(404).send({ error: 'Video not found' })
+    }
+  } catch (error) {
+    return res.status(500).send({ error })
+  }
+}
+
 export default {
   index,
   upload,
   videos,
-  restart
+  restart,
+  video
 }

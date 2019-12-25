@@ -12,6 +12,7 @@ const upload = multer({
 router.post('/upload', upload.single('video'), v1Controller.upload)
 
 router.get('/videos', v1Controller.videos)
+router.get('/video/:filename', v1Controller.video)
 
 router.get('/restart/:filename', v1Controller.restart)
 

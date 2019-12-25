@@ -3,6 +3,9 @@ import request from 'supertest'
 import app from '@src/app'
 import { expect } from '@test/bootstrap/chai'
 
+const START = 1
+const END = 5
+
 let token: string
 let filename: string
 
@@ -45,8 +48,8 @@ describe('GET /api/v1/upload', () => {
   it('should upload', async () => {
     const res = await request(app)
       .post('/api/v1/upload')
-      .field('start', 1)
-      .field('end', 5)
+      .field('start', START)
+      .field('end', END)
       .attach('video', path.join(__dirname, 'data/video.mp4'))
       .set({ Authorization: 'bearer ' + token })
 
@@ -81,5 +84,28 @@ describe('GET /api/v1/restart', () => {
     expect(res.status).to.equal(200)
     expect(res.body).not.to.be.empty()
     expect(res.body.status).to.be.equal('restarted')
+  })
+})
+
+describe('GET /api/v1/video', () => {
+  const requestVideo = async (): Promise<request.Test> => request(app)
+    .get('/api/v1/video/' + filename)
+    .set({ Authorization: 'bearer ' + token })
+
+  before(async () => {
+    let res = await requestVideo()
+
+    while (res.status !== 200) {
+      res = await requestVideo()
+    }
+  })
+
+  it('should get video link and duration', async () => {
+    const res = await requestVideo()
+
+    expect(res.status).to.equal(200)
+    expect(res.body).not.to.be.empty()
+    expect(res.body.link).not.to.be.empty()
+    expect(res.body.duration).to.be.equal(END - START)
   })
 })

@@ -23,6 +23,13 @@ const videoSchema = new mongoose.Schema({
   start: { type: Number },
   end: { type: Number },
   status: { type: VideoStatus }
-}, { timestamps: true })
+}, {
+  timestamps: true,
+  toJSON: {
+    transform: function (doc, ret: VideoDocument) {
+      delete ret._id
+    }
+  }
+})
 
 export const Video = mongoose.model<VideoDocument>('Video', videoSchema)

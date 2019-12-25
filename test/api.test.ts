@@ -42,12 +42,12 @@ describe('GET /api/v1', () => {
   })
 })
 
-describe('GET /api/v1/upload', () => {
+describe('GET /api/v1/videos/upload', () => {
   before(getToken)
 
   it('should upload', async () => {
     const res = await request(app)
-      .post('/api/v1/upload')
+      .post('/api/v1/videos/upload')
       .field('start', START)
       .field('end', END)
       .attach('video', path.join(__dirname, 'data/video.mp4'))
@@ -75,10 +75,10 @@ describe('GET /api/v1/videos', () => {
   })
 })
 
-describe('GET /api/v1/restart', () => {
+describe('GET /api/v1/videos/{filename}/restart', () => {
   it('should restart video trimming', async () => {
     const res = await request(app)
-      .get('/api/v1/restart/' + filename)
+      .get(`/api/v1/videos/${filename}/restart`)
       .set({ Authorization: 'bearer ' + token })
 
     expect(res.status).to.equal(200)
@@ -87,9 +87,9 @@ describe('GET /api/v1/restart', () => {
   })
 })
 
-describe('GET /api/v1/video', () => {
+describe('GET /api/v1/videos/{filename}/link', () => {
   const requestVideo = async (): Promise<request.Test> => request(app)
-    .get('/api/v1/video/' + filename)
+    .get(`/api/v1/videos/${filename}/link`)
     .set({ Authorization: 'bearer ' + token })
 
   before(async () => {

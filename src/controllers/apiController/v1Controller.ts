@@ -44,7 +44,7 @@ const upload = async (req: AuthRequest, res: Response): Promise<object> => {
     return res.status(500).send({ error })
   }
 
-  return res.send({ filename: req.file.filename })
+  return res.send(video.toJSON())
 }
 
 const videos = async (req: AuthRequest, res: Response): Promise<object> => {
@@ -73,7 +73,7 @@ const restart = async (req: AuthRequest, res: Response): Promise<object> => {
   }
 }
 
-const video = async (req: AuthRequest, res: Response): Promise<object> => {
+const videoLink = async (req: AuthRequest, res: Response): Promise<object> => {
   try {
     const video = await Video.findOne({
       userUuid: req.user.uuid,
@@ -104,5 +104,5 @@ export default {
   upload,
   videos,
   restart,
-  video
+  videoLink
 }

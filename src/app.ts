@@ -8,6 +8,7 @@ import { connect } from '@src/services/mongoose'
 import { JWT_SECRET } from '@src/util/secrets'
 
 import tokenRouter from '@routes/tokenRouter'
+import playRouter from '@routes/playRouter'
 import apiRouter from '@routes/apiRouter'
 
 // Create Express server
@@ -38,6 +39,7 @@ app.use(
 )
 
 app.use('/token', tokenRouter)
+app.use('/play', playRouter)
 app.use('/api', jwtMiddleWare, apiRouter)
 
 export default app

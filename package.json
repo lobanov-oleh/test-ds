@@ -32,7 +32,7 @@
     "compression": "^1.7.4",
     "dotenv": "^8.2.0",
     "errorhandler": "^1.5.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-jwt": "^5.3.1",
     "express-validator": "^6.3.0",
     "fluent-ffmpeg": "^2.1.2",
